@@ -1,25 +1,24 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
-
-
-# -*- coding: utf-8 -*-
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #!/date/
+import urllib3
 import urllib
 from threading import Thread,Lock
 import requests
-from Queue import Queue
+from queue import Queue
 import time
 import re
+
+
 
 class Fetcher:
     def __init__(self,threads):
 
-        self.opener = urllib.build_opener(urllib.HTTPHandler)
+        self.opener = urllib.request.build_opener(urllib.request.HTTPHandler)
         self.lock = Lock() #线程锁
-        # self.q_req = Queue() #任务队列
-        # self.q_ans = Queue() #完成队列
+        self.q_req = Queue() #任务队列
+        self.q_ans = Queue() #完成队列
         self.threads = threads
         for i in range(threads):
             t = Thread(target=self.threadget)
