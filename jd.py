@@ -47,5 +47,7 @@ if __name__ == '__main__':
     ans = list(map(trans_to_comma, z))
     urls = list(map(get_url, ans))
 
-
+ a2 = ''.join(a1.split())
  re.findall('<liclass="gl-item">.*?<\/li>',a2)[0]
+
+
