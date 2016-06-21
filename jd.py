@@ -48,4 +48,4 @@ if __name__ == '__main__':
     urls = list(map(get_url, ans))
 
 
-
+ re.findall('<liclass="gl-item">.*?<\/li>',a2)[0]
