@@ -3,21 +3,21 @@
 import requests, re, urllib, time
 from threading import Lock, Thread
 from queue import Queue
-
+from multiprocessing.dummy import Pool as ThreadPool
 
 class Fetcher:
-    def __init__(self,threads):
+    def __init__(self,threads,subject):
         self.opener = urllib.request.build_opener(urllib.request.HTTPHandler)
         self.lock = Lock()
         self.q_req = Queue()
         self.q_ans = Queue()
         self.threads = threads
+        self.subject = subject
         for i in range(threads):
-            t = Thread(target=self.threadget)
+            t = Thread(target=self.threadget,args=subject)
             t.setDaemon(True)
             t.start()
         self.running = 0
-
 
     def __del__(self):
         time.sleep(0.5)
@@ -27,19 +27,32 @@ class Fetcher:
     def taskleft(self):
         return self.q_req.qsize()+self.q_ans.qsize()+self.running
 
-    def push(self,req):
+    def push(self, req):
         self.q_req.put(req)
 
-
-    def pop(self,ans):
+    def pop(self, ans):
         return self.q_ans.get()
 
-    def threadget(self):
+    def download_imag(self, subject):
+        global count
+        s = requests.session()
+        imag = s.get(subject['cover'])
+        name = subject['title']
+        path = '/users/peibibing/PycharmProjects/douban/douban_movie/%s.jpg'%name
+        with open(path,'wb') as f:
+            f.write(imag.content)
+        count += 1
+        print(count)
+        return 'ok'
+
+    def threadget(self,sub):
         while True:
             req = self.q_req.get()
             with self.lock:  #保证操作的原子性
                 self.running += 1
             try:
+                # ans = download_imag(sub)
+
                 ans = self.opener.open(req).read()
             except Exception:
                 ans = 'error'
@@ -77,12 +90,18 @@ def get_subject(url):
 
 count = 0
 if __name__ == "__main__":
-    
+    pool = ThreadPool(5)
     num = 20
     url = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&sort=recommend&page_limit=6000&page_start=0'
     subjects = get_subject(url)
+    pool.map(download_imag, subjects)
     # print(subjects[0])
-    end = list(map(download_imag,subjects))
+    # end = list(map(download_imag,subjects))
     # print(len(end))
     # f = Fetcher(threads=10)
-    # map(f.push(),)
+    # for subject in subjects:
+    #     f.push(subject)
+    # while f.taskleft():
+    #     f.pop()
+
+
