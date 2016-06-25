@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+<<<<<<< HEAD
 # !/usr/bin/env python
+=======
+#!/usr/bin/env python
+>>>>>>> 94485f19db3549a7793db731bf4305913f3bba46
 from selenium import webdriver
 import time, re, requests
 
@@ -11,8 +15,12 @@ def message(mea):
     comments = re.findall('#comment">(\d.*?)<\/a>', mea)[0]
     skuid = re.findall('data-sku="(\d*?)"', mea)[0]
     href = 'http:'+re.findall('href="(.*?)"', mea)[0]
+<<<<<<< HEAD
     img1 = re.findall('(\/\/img.*jpg)', mea)
     # img1 = re.findall('<imgwidth="200"height="200"data-img="1"src="(.*jpg?)', mea)[0]
+=======
+    img1 = re.findall('<imgwidth="200"height="200"data-img="1"src="(.*jpg?)', mea)[0]
+>>>>>>> 94485f19db3549a7793db731bf4305913f3bba46
     img1 = 'http:'+img1
     s = requests.session()
     img = s.get(img1)
@@ -32,7 +40,11 @@ def message(mea):
 
 def get_message(url):
     driver =webdriver.PhantomJS()
+<<<<<<< HEAD
     # webdriver.Firefox()
+=======
+    webdriver.Firefox()
+>>>>>>> 94485f19db3549a7793db731bf4305913f3bba46
     driver.get(url)
     time.sleep(10)
 
@@ -43,7 +55,10 @@ def get_message(url):
     a2 = ''.join(a1.split())
     h = re.findall('<liclass="gl-item">.*?<\/li>',a2)
     print(len(h), h)
+<<<<<<< HEAD
     print(h[0])
+=======
+>>>>>>> 94485f19db3549a7793db731bf4305913f3bba46
     # map(message, h)
     for i in range(len(h)):
         message(h[i])
@@ -89,3 +104,7 @@ if __name__ == '__main__':
     url = 'http://list.jd.com/list.html?cat=1713,3263,3394'
     get_message(url)
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 94485f19db3549a7793db731bf4305913f3bba46
