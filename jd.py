@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-<<<<<<< HEAD
 # !/usr/bin/env python
-=======
-#!/usr/bin/env python
->>>>>>> 94485f19db3549a7793db731bf4305913f3bba46
 from selenium import webdriver
 import time, re, requests
 
@@ -15,13 +11,9 @@ def message(mea):
     comments = re.findall('#comment">(\d.*?)<\/a>', mea)[0]
     skuid = re.findall('data-sku="(\d*?)"', mea)[0]
     href = 'http:'+re.findall('href="(.*?)"', mea)[0]
-<<<<<<< HEAD
     img1 = re.findall('(\/\/img.*jpg)', mea)
     # img1 = re.findall('<imgwidth="200"height="200"data-img="1"src="(.*jpg?)', mea)[0]
-=======
-    img1 = re.findall('<imgwidth="200"height="200"data-img="1"src="(.*jpg?)', mea)[0]
->>>>>>> 94485f19db3549a7793db731bf4305913f3bba46
-    img1 = 'http:'+img1
+    img1 = 'http:'+img1[0]
     s = requests.session()
     img = s.get(img1)
     path_img = '/Users/peibibing/Desktop/jd/img/%s.jpg'%skuid
@@ -33,18 +25,16 @@ def message(mea):
     a['skuid'] = skuid
     a['href'] = href
     a['img'] = img1
+    print(a)
     with open('/Users/peibibing/Desktop/jd/message.txt', 'a')as f:
-        f.writelines(a)
+        f.write(repr(a)+',')
+        # f.writelines(a)
     return 0
 
 
 def get_message(url):
     driver =webdriver.PhantomJS()
-<<<<<<< HEAD
     # webdriver.Firefox()
-=======
-    webdriver.Firefox()
->>>>>>> 94485f19db3549a7793db731bf4305913f3bba46
     driver.get(url)
     time.sleep(10)
 
@@ -53,14 +43,12 @@ def get_message(url):
     a = driver.page_source.encode()
     a1 = a.decode()
     a2 = ''.join(a1.split())
-    h = re.findall('<liclass="gl-item">.*?<\/li>',a2)
+    h = re.findall('<liclass="gl-item">.*?<\/li>', a2)
     print(len(h), h)
-<<<<<<< HEAD
     print(h[0])
-=======
->>>>>>> 94485f19db3549a7793db731bf4305913f3bba46
     # map(message, h)
     for i in range(len(h)):
+        print(i)
         message(h[i])
 
 
@@ -90,9 +78,6 @@ def get_url(y):
     url = 'http://list.jd.com/list.html?cat='+y
     return url
 
-def main():
-    return 0
-
 
 if __name__ == '__main__':
     # h = requests.get('http://dc.3.cn/category/get?callback=getCategoryCallback')
@@ -102,9 +87,6 @@ if __name__ == '__main__':
     # urls = list(map(get_url, ans))#获取第三级目录url
 
     url = 'http://list.jd.com/list.html?cat=1713,3263,3394'
+    print('test')
     get_message(url)
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 94485f19db3549a7793db731bf4305913f3bba46
