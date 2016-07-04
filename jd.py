@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
 import time, re, requests
-
+from multiprocessing.dummy import Pool as ThreadPool
 
 def message(mea):
     a = {}
@@ -16,7 +17,7 @@ def message(mea):
     img1 = 'http:'+img1[0]
     s = requests.session()
     img = s.get(img1)
-    path_img = '/Users/peibibing/Desktop/jd/img/%s.jpg'%skuid
+    path_img = '/Users/peibibing/Desktop/jd/img1/%s.jpg'%skuid
     with open(path_img, 'wb')as f:
         f.write(img.content)
     a['price'] = price
@@ -25,17 +26,27 @@ def message(mea):
     a['skuid'] = skuid
     a['href'] = href
     a['img'] = img1
-    print(a)
-    with open('/Users/peibibing/Desktop/jd/message.txt', 'a')as f:
+    # print(a)
+    with open('/Users/peibibing/Desktop/jd/message1.txt', 'a')as f:
         f.write(repr(a)+',')
         # f.writelines(a)
     return 0
 
 
 def get_message(url):
-    driver =webdriver.PhantomJS()
+    # url = url[:-2]
+    driver = webdriver.PhantomJS()
     # webdriver.Firefox()
-    driver.get(url)
+    # driver.set_page_load_timeout()
+    city = WebDriverWait(driver, 10)
+    driver.set_page_load_timeout(10)  # 设置selenium的页面加载时间
+    try:
+        driver.implicitly_wait(10)# 设置selenium的页面加载时间
+        driver.get(url)
+
+    except TimeoutError:
+        print('time out after 30 seconds when loading page')
+        # driver.execute_script('window.stop()')
     time.sleep(10)
 
     #.text获取元素的文本数据
@@ -44,18 +55,12 @@ def get_message(url):
     a1 = a.decode()
     a2 = ''.join(a1.split())
     h = re.findall('<liclass="gl-item">.*?<\/li>', a2)
-    print(len(h), h)
-    print(h[0])
+    # print(len(h), h)
+    # print(h[58])
     # map(message, h)
     for i in range(len(h)):
-        print(i)
+        # print(i)
         message(h[i])
-
-
-
-
-
-
 
     # c = re.findall('<div class="item-sub" id="category-item-1".*', a1)
     # print(len(c))
@@ -85,8 +90,40 @@ if __name__ == '__main__':
     # z = re.findall('(\d+\-\d+\-\d+)\|', h1)
     # ans = list(map(trans_to_comma, z))
     # urls = list(map(get_url, ans))#获取第三级目录url
+    # for i in range(len(urls)):
+    #     with open('/Users/peibibing/Desktop/jd/urls.txt', 'a')as f:
+    #         f.write(urls[i]+'\n')
+    with open('/Users/peibibing/Desktop/jd/urls.txt', 'r')as f:
+        urls = f.readlines()
+    print(len(urls))
+    print(urls[0])
+    with open('/Users/peibibing/Desktop/jd/config.txt', 'r')as f:
+        a = f.readlines()[0]
+        a = int(a)+1
 
-    url = 'http://list.jd.com/list.html?cat=1713,3263,3394'
-    print('test')
-    get_message(url)
+    pool = ThreadPool(4)
+    results = pool.map(get_message, urls)
+    pool.close()
+    pool.join()
+
+
+    #
+    # for i in range(a, len(urls)):
+    #     try:
+    #         print('url:'+str(i))
+    #         time_start = time.time()
+    #         get_message(urls[i])
+    #         with open('/Users/peibibing/Desktop/jd/config.txt', 'w')as f:
+    #             f.writelines(str(i))
+    #         perid_time = time.time()-time_start
+    #         print(perid_time)
+    #     except Exception:
+    #         print('error happened')
+    #         with open('/Users/peibibing/Desktop/jd/error_config.txt', 'a')as f:
+    #             f.writelines(str(i))
+
+
+    # url = 'http://list.jd.com/list.html?cat=1713,3263,3394'
+    # print('test')
+    # get_message(url)
 

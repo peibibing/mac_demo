@@ -1,0 +1,9 @@
+Mac下mysql 安装步骤
+1、brew install mysql
+2、unset TMPDIR
+3、bash mysql_install_db --verbose --user=root
+4、--basedir="$(brew --prefix mysql)"--datadir=/usr/local/var/mysql --tmpdir=/tmp
+5、bash mysql.server start
+6、mysql -uroot -p
+7、set password for root@localhost=password(‘123456');
+8、FLUSH PRIVILEGES;
