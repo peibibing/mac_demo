@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 import time, re, requests
 from multiprocessing.dummy import Pool as ThreadPool
 
+#从每个商品信息中,提取我们需要的信息(price,name,comments,skuid,href,img)
 def message(mea):
     a = {}
     price = re.findall('<i>(\d.*?)<\/i>', mea)[0]#mea为一个商品的信息
@@ -33,6 +34,7 @@ def message(mea):
     return 0
 
 
+#动态解析url
 def get_message(url):
     # url = url[:-2]
     driver = webdriver.PhantomJS()
@@ -44,7 +46,8 @@ def get_message(url):
         driver.implicitly_wait(10)# 设置selenium的页面加载时间
         driver.get(url)
 
-    except TimeoutError:
+    except RuntimeWarning:
+            # TimeoutError:
         print('time out after 30 seconds when loading page')
         # driver.execute_script('window.stop()')
     time.sleep(10)
@@ -79,6 +82,7 @@ def trans_to_comma(x):
     return t1
 
 
+#获取第三级类别的商品信息url
 def get_url(y):
     url = 'http://list.jd.com/list.html?cat='+y
     return url
